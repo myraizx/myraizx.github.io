@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyRaiz - Yeni ve En İyi</title>
+    <style>
+        :root {
+            --dark-bg: #1a1a2e;
+            --dark-text: #e0e0e0;
+            --dark-accent: #e94560; /* SonOyuncu kırmızısı gibi */
+            --dark-card-bg: #16213e;
+            --dark-border: #0f3460;
+
+            --light-bg: #f0f2f5;
+            --light-text: #333;
+            --light-accent: #cf0a2c; /* Daha canlı bir kırmızı */
+            --light-card-bg: #ffffff;
+            --light-border: #ccc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        body.dark-mode .container {
+            background-color: var(--dark-card-bg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        body.light-mode .container {
+            background-color: var(--light-card-bg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 5px;
+            color: var(--dark-accent); /* Başlık rengi sabit, dikkat çeksin */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            transition: color 0.3s;
+        }
+        body.light-mode h1 {
+             color: var(--light-accent);
+        }
+
+        p.slogan {
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 40px;
+            color: var(--dark-text);
+        }
+        body.light-mode p.slogan {
+             color: var(--light-text);
+        }
+
+        .game-mode {
+            margin-bottom: 40px;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--dark-border);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        body.dark-mode .game-mode {
+            background-color: var(--dark-bg);
+        }
+        body.light-mode .game-mode {
+            background-color: var(--light-card-bg);
+            border-color: var(--light-border);
+        }
+
+        .game-mode h2 {
+            font-size: 2em;
+            color: var(--dark-accent);
+            margin-bottom: 10px;
+        }
+         body.light-mode .game-mode h2 {
+             color: var(--light-accent);
+        }
+
+        .download-button {
+            display: inline-block;
+            background-color: var(--dark-accent);
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.3em;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode .download-button {
+             background-color: var(--light-accent);
+        }
+
+        .download-button:hover {
+            background-color: #f72c4d; /* Hover için biraz daha açık */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        body.light-mode .download-button:hover {
+             background-color: #e50a2c;
+        }
+
+        .how-to-play {
+            margin-top: 50px;
+            text-align: left;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--dark-border);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        body.dark-mode .how-to-play {
+            background-color: var(--dark-bg);
+        }
+        body.light-mode .how-to-play {
+            background-color: var(--light-card-bg);
+            border-color: var(--light-border);
+        }
+
+        .how-to-play h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: var(--dark-accent);
+        }
+        body.light-mode .how-to-play h3 {
+             color: var(--light-accent);
+        }
+
+        .how-to-play ol {
+            list-style-type: decimal;
+            padding-left: 25px;
+        }
+
+        .how-to-play li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--dark-card-bg);
+            color: var(--dark-text);
+            border: 1px solid var(--dark-border);
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body.light-mode .theme-toggle {
+            background-color: var(--light-card-bg);
+            color: var(--light-text);
+            border-color: var(--light-border);
+        }
+
+        .theme-toggle:hover {
+            opacity: 0.8;
+        }
+
+        /* Küçük ekranlar için responsive ayarlar */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5em;
+            }
+            p.slogan {
+                font-size: 1.1em;
+            }
+            .download-button {
+                font-size: 1.1em;
+                padding: 12px 25px;
+            }
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode"> <button id="themeToggle" class="theme-toggle">Temayı Değiştir (Şu An: Karanlık)</button>
+
+    <div class="container">
+        <h1>MyRaiz</h1>
+        <p class="slogan">Yeni ve en iyi</p>
+
+        <div class="game-mode">
+            <h2>Bedwars</h2>
+            <p>Destansı Bedwars savaşlarında yeteneklerini göster!</p>
+        </div>
+
+        <a href="URL_BURAYA_GELECEK" class="download-button" download>Başlatıcıyı indir</a>
+
+        <div class="how-to-play">
+            <h3>Nasıl Oynanır?</h3>
+            <ol>
+                <li>Yukarıdaki "Başlatıcıyı indir" butonuna tıklayarak MyRaiz başlatıcısını bilgisayarına indir.</li>
+                <li>İndirdiğin başlatıcıyı çalıştır.</li>
+                <li>Başlatıcıda istediğin kullanıcı adını gir ve "Giriş Yap" butonuna tıkla.</li>
+                <li>Otomatik olarak MyRaiz sunucusuna bağlanacaksın!</li>
+                <li>Sunucuya ilk defa giriyorsan, AuthMe üzerinden şifreni belirleyerek hesabını güvence altına al.</li>
+                <li>Hazırsın! Bedwars ve diğer harika oyun modlarının tadını çıkar!</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // Kullanıcının tercihini LocalStorage'dan yükle
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.className = savedTheme;
+            updateButtonText(savedTheme);
+        } else {
+            // Hiç tercih yoksa, sistem tercihini veya varsayılanı kullan
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                body.className = 'light-mode';
+                updateButtonText('light-mode');
+            } else {
+                body.className = 'dark-mode';
+                updateButtonText('dark-mode');
+            }
+        }
+
+
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                localStorage.setItem('theme', 'light-mode');
+                updateButtonText('light-mode');
+            } else {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark-mode');
+                updateButtonText('dark-mode');
+            }
+        });
+
+        function updateButtonText(currentTheme) {
+            themeToggle.textContent = `Temayı Değiştir (Şu An: ${currentTheme === 'dark-mode' ? 'Karanlık' : 'Aydınlık'})`;
+        }
+    </script>
+</body>
+</html>
