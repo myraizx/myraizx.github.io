@@ -4,77 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyRaiz - Yeni ve En İyi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Renk Değişkenleri */
         :root {
             /* Koyu Mod (CraftRise Benzeri) */
-            --dark-primary-bg: #1A1A2E; /* Arka plan koyu mavi/mor */
-            --dark-secondary-bg: #0F0E23; /* Navbar gibi daha koyu öğeler */
-            --dark-text-color: #E0E0E0; /* Açık renk metin */
-            --dark-accent-orange: #E2621B; /* Canlı turuncu */
-            --dark-accent-red: #CF0A2C; /* Kırmızı vurgu */
-            --dark-card-bg: #272740; /* Kart arka planı */
-            --dark-border-color: #3C3C60; /* Kart border */
+            --dark-primary-bg: #100C2A; /* Daha koyu morumsu */
+            --dark-secondary-bg: #1F1944; /* Navbar gibi */
+            --dark-text-color: #ECEFF1; /* Açık renk metin */
+            --dark-accent-orange: #FF6F00; /* Daha parlak turuncu */
+            --dark-accent-red: #E74C3C; /* Kırmızı vurgu */
+            --dark-card-bg: #2C275F; /* Kart arka planı */
+            --dark-border-color: #4A4588; /* Kart border */
+            --dark-shadow-color: rgba(0, 0, 0, 0.6);
+            --dark-button-gradient-start: #FF6F00;
+            --dark-button-gradient-end: #FF9800;
+        }
+
+        /* Aydınlık Mod Stilleri */
+        body.light-mode {
+            --dark-primary-bg: #E0E0E0; /* Açık arka plan */
+            --dark-secondary-bg: #F5F5F5; /* Navbar gibi daha açık öğeler */
+            --dark-text-color: #333333; /* Koyu renk metin */
+            --dark-accent-orange: #F57C00; /* Daha açık turuncu */
+            --dark-accent-red: #D32F2F; /* Daha açık kırmızı */
+            --dark-card-bg: #FFFFFF; /* Kart arka planı */
+            --dark-border-color: #CCCCCC; /* Kart border */
+            --dark-shadow-color: rgba(0, 0, 0, 0.2);
+            --dark-button-gradient-start: #F57C00;
+            --dark-button-gradient-end: #FFB300;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Oswald', sans-serif; /* Ana metin fontu */
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            background-color: var(--dark-primary-bg);
+            background: var(--dark-primary-bg); /* Başlangıç rengi */
             color: var(--dark-text-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
-            overflow-x: hidden; /* Yatay kaydırmayı engelle */
-            position: relative; /* Toggle butonu için */
-        }
-
-        /* Aydınlık Mod Stilleri */
-        body.light-mode {
-            --dark-primary-bg: #F0F2F5; /* Açık arka plan */
-            --dark-secondary-bg: #FFFFFF; /* Navbar gibi daha açık öğeler */
-            --dark-text-color: #333333; /* Koyu renk metin */
-            --dark-accent-orange: #F57C00; /* Daha açık turuncu */
-            --dark-accent-red: #E04000; /* Daha açık kırmızı */
-            --dark-card-bg: #FFFFFF; /* Kart arka planı */
-            --dark-border-color: #DDDDDD; /* Kart border */
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+            position: relative;
         }
 
         /* Toggle Button */
         .theme-toggle {
-            position: fixed; /* Fixed position */
-            top: 20px;
-            right: 20px;
+            position: fixed;
+            top: 25px;
+            right: 25px;
             background-color: var(--dark-secondary-bg);
             color: var(--dark-text-color);
             border: 1px solid var(--dark-border-color);
-            padding: 10px 15px;
-            border-radius: 5px;
+            padding: 12px 18px;
+            border-radius: 6px; /* Daha az yuvarlak */
             cursor: pointer;
-            font-size: 0.9em;
-            z-index: 1000; /* Üstte kalmasını sağla */
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            font-size: 0.95em;
+            font-weight: 600;
+            z-index: 1000;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px var(--dark-shadow-color);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
         .theme-toggle:hover {
-            opacity: 0.9;
+            opacity: 0.95;
+            box-shadow: 0 6px 12px var(--dark-shadow-color);
+            transform: translateY(-1px);
         }
 
-        /* Ana İçerik Kutusu (CraftRise'daki ana video alanı gibi) */
+        /* Ana İçerik Kutusu */
         .hero-section {
             width: 100%;
-            height: 60vh; /* Ekran yüksekliğinin %60'ı */
+            height: 65vh; /* Biraz daha yüksek */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             position: relative;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://via.placeholder.com/1500x800/222222/FFFFFF?text=MyRaiz+Arka+Plan') no-repeat center center / cover; /* Placeholder resim */
-            color: white; /* Metin rengi sabit beyaz */
-            margin-bottom: 50px;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://via.placeholder.com/1920x1080/111111/FFFFFF?text=MyRaiz+Arka+Plan') no-repeat center center / cover;
+            background-attachment: fixed; /* Parallax etkisi gibi */
+            color: white;
+            padding: 20px;
+            box-shadow: inset 0 -15px 30px rgba(0,0,0,0.7); /* Alt gölge */
         }
 
         .hero-section::before {
@@ -84,175 +98,263 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.4); /* Karanlık overlay */
+            background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%); /* Hafif vinyet */
             z-index: 1;
         }
 
         .hero-content {
             position: relative;
             z-index: 2;
-            padding: 20px;
         }
 
         .hero-content h1 {
-            font-size: 4.5em;
+            font-family: 'Montserrat', sans-serif; /* Başlık fontu */
+            font-size: 5.5em; /* Daha büyük */
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 900; /* Daha kalın */
-            color: white; /* Başlık rengi daima beyaz */
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+            letter-spacing: 4px; /* Harf aralığı */
+            font-weight: 900;
+            color: #FFFFFF; /* Başlık rengi daima beyaz */
+            text-shadow: 0 0 15px rgba(255,255,255,0.4), 0 0 25px rgba(255,165,0,0.6); /* Işıklı gölge */
+            animation: fadeInDown 1.2s ease-out; /* Hafif giriş animasyonu */
         }
 
         .hero-content p.slogan {
-            font-size: 1.8em;
-            margin-top: 10px;
-            margin-bottom: 40px;
-            color: #E0E0E0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-family: 'Oswald', sans-serif;
+            font-size: 2em; /* Daha büyük */
+            margin-top: 15px;
+            margin-bottom: 50px;
+            color: #F0F0F0;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+            animation: fadeInUp 1.2s ease-out 0.3s backwards;
         }
 
         .download-button {
             display: inline-block;
-            background-color: var(--dark-accent-orange);
+            background: linear-gradient(45deg, var(--dark-button-gradient-start), var(--dark-button-gradient-end)); /* Gradient buton */
             color: white;
-            padding: 15px 40px;
-            font-size: 1.5em;
+            padding: 18px 45px; /* Daha büyük buton */
+            font-size: 1.6em;
             text-decoration: none;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+            border-radius: 6px; /* Daha az yuvarlak */
+            transition: all 0.3s ease;
             border: none;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 2px 5px rgba(255,255,255,0.3); /* Hem dış hem iç gölge */
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            transform: skewX(-5deg); /* Hafif eğiklik */
+            perspective: 1000px; /* 3D dönüşüm için */
+        }
+
+        .download-button span {
+            display: block;
+            transform: skewX(5deg); /* Metni düzelt */
         }
 
         .download-button:hover {
-            background-color: #FF8D1A; /* Hover için biraz daha açık turuncu */
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, var(--dark-button-gradient-end), var(--dark-button-gradient-start)); /* Hoverda gradient yönü değişsin */
+            transform: translateY(-5px) skewX(-5deg); /* Daha belirgin kalkış */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7), inset 0 2px 8px rgba(255,255,255,0.4);
         }
 
         /* Duyuru Kartı Benzeri Bölüm (Nasıl Oynanır) */
         .content-section {
             width: 90%;
             max-width: 900px;
-            margin-bottom: 50px;
+            margin: 50px 0;
         }
 
         .announcement-card {
             display: flex;
             background-color: var(--dark-card-bg);
-            border-radius: 10px;
+            border-radius: 8px; /* Daha az yuvarlak */
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 30px;
+            box-shadow: 0 6px 20px var(--dark-shadow-color); /* Derin gölge */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
             border: 1px solid var(--dark-border-color);
+            margin-bottom: 30px;
+        }
+        .announcement-card:hover {
+            transform: translateY(-5px); /* Hafif kalkış */
+            box-shadow: 0 10px 25px var(--dark-shadow-color);
         }
 
         .announcement-image-area {
-            flex-shrink: 0; /* Küçülmesini engelle */
-            width: 300px; /* Sabit genişlik */
-            min-height: 200px; /* Minimum yükseklik */
-            background: url('https://via.placeholder.com/300x200/555555/FFFFFF?text=Bedwars') no-repeat center center / cover; /* Bedwars placeholder */
+            flex-shrink: 0;
+            width: 350px; /* Biraz daha geniş */
+            min-height: 250px; /* Minimum yükseklik */
+            background: url('https://via.placeholder.com/400x300/444444/FFFFFF?text=BEDWARS') no-repeat center center / cover; /* Bedwars placeholder */
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8em;
-            font-weight: bold;
+            font-size: 2.2em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
             color: white;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        .announcement-image-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%); /* Hafif overlay */
+            z-index: 1;
+        }
+        .announcement-image-area span {
+            position: relative;
+            z-index: 2;
         }
 
+
         .announcement-text-area {
-            padding: 25px;
+            padding: 30px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             text-align: left;
+            position: relative;
         }
 
         .announcement-tag {
-            background-color: var(--dark-accent-red);
+            background: linear-gradient(45deg, var(--dark-accent-red), #F08080); /* Kırmızı gradient */
             color: white;
-            padding: 5px 15px;
-            border-radius: 5px;
-            font-size: 0.8em;
+            padding: 6px 18px;
+            border-radius: 4px; /* Daha az yuvarlak */
+            font-size: 0.85em;
             font-weight: bold;
             text-transform: uppercase;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
 
         .announcement-title {
-            font-size: 2.2em;
-            margin: 0 0 15px 0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5em;
+            margin: 0 0 18px 0;
             color: var(--dark-text-color);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
         }
 
         .how-to-play ol {
             padding-left: 25px;
             list-style-type: decimal;
+            font-size: 1.1em;
+            line-height: 1.8;
         }
 
         .how-to-play li {
-            margin-bottom: 10px;
-            line-height: 1.6;
+            margin-bottom: 12px;
         }
         .how-to-play li:last-child {
             margin-bottom: 0;
         }
 
+        /* Anahtar kare animasyonları */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Küçük ekranlar için responsive ayarlar */
         @media (max-width: 768px) {
             .hero-section {
-                height: 50vh;
+                height: 55vh;
             }
             .hero-content h1 {
-                font-size: 3em;
+                font-size: 3.5em;
+                letter-spacing: 2px;
             }
             .hero-content p.slogan {
-                font-size: 1.3em;
+                font-size: 1.5em;
+                margin-bottom: 30px;
             }
             .download-button {
-                font-size: 1.2em;
-                padding: 12px 30px;
+                font-size: 1.3em;
+                padding: 15px 35px;
+                transform: skewX(0); /* Mobil için eğikliği kaldır */
+            }
+            .download-button span {
+                transform: skewX(0);
+            }
+            .download-button:hover {
+                transform: translateY(-3px) skewX(0);
             }
 
             .announcement-card {
-                flex-direction: column; /* Küçük ekranlarda alt alta */
+                flex-direction: column;
             }
             .announcement-image-area {
                 width: 100%;
-                height: 200px; /* Sabit yükseklik */
+                height: 220px;
+                min-height: auto;
             }
             .announcement-text-area {
                 padding: 20px;
             }
             .announcement-title {
-                font-size: 1.8em;
+                font-size: 2em;
             }
             .how-to-play ol {
                 padding-left: 20px;
+            }
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                padding: 10px 15px;
+                font-size: 0.85em;
             }
         }
 
         @media (max-width: 480px) {
             .hero-content h1 {
-                font-size: 2.2em;
+                font-size: 2.5em;
+                letter-spacing: 1px;
             }
             .hero-content p.slogan {
-                font-size: 1em;
+                font-size: 1.2em;
+                margin-top: 10px;
+                margin-bottom: 25px;
             }
             .download-button {
-                font-size: 1em;
-                padding: 10px 25px;
+                font-size: 1.1em;
+                padding: 12px 28px;
+            }
+            .announcement-title {
+                font-size: 1.6em;
+            }
+            .announcement-text-area {
+                padding: 15px;
+            }
+            .how-to-play ol {
+                font-size: 0.95em;
             }
             .theme-toggle {
-                top: 10px;
-                right: 10px;
                 padding: 8px 12px;
                 font-size: 0.8em;
             }
@@ -267,14 +369,14 @@
         <div class="hero-content">
             <h1>MyRaiz</h1>
             <p class="slogan">Yeni ve en iyi</p>
-            <a href="URL_BURAYA_GELECEK" class="download-button" download>Başlatıcıyı indir</a>
+            <a href="URL_BURAYA_GELECEK" class="download-button" download><span>Başlatıcıyı indir</span></a>
         </div>
     </div>
 
     <div class="content-section">
         <div class="announcement-card">
             <div class="announcement-image-area">
-                BEDWARS
+                <span>BEDWARS</span>
             </div>
             <div class="announcement-text-area">
                 <p class="announcement-tag">NASIL OYNANIR?</p>
@@ -291,8 +393,7 @@
                 </div>
             </div>
         </div>
-        </div>
-
+    </div>
 
     <script>
         const themeToggle = document.getElementById('themeToggle');
@@ -304,12 +405,11 @@
             if (savedTheme) {
                 body.className = savedTheme;
             } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-                // Tarayıcının sistem tercihini kullan (eğer kaydedilmiş tema yoksa)
                 body.classList.add('light-mode');
             } else {
-                body.classList.add('dark-mode'); // Varsayılan karanlık mod
+                body.classList.add('dark-mode');
             }
-            updateButtonText(); // Buton metnini güncelle
+            updateButtonText();
         });
 
         themeToggle.addEventListener('click', () => {
@@ -322,7 +422,7 @@
                 body.classList.add('dark-mode');
                 localStorage.setItem('myraiz-theme', 'dark-mode');
             }
-            updateButtonText(); // Buton metnini güncelle
+            updateButtonText();
         });
 
         function updateButtonText() {
