@@ -68,7 +68,7 @@
             display: flex;
             gap: 10px;
             z-index: 1000;
-            align-items: center; /* Align items vertically */
+            align-items: center;
         }
 
         .theme-toggle, .auth-top-button, .user-display-button {
@@ -91,13 +91,12 @@
             transform: translateY(-1px);
         }
 
-        /* Style for the username text */
         .username-display {
             color: var(--dark-text-color);
             font-size: 1.1em;
             font-weight: 700;
-            padding: 12px 0; /* Align with button padding */
-            margin-right: 5px; /* Space between username and logout button */
+            padding: 12px 0;
+            margin-right: 5px;
         }
 
         .hero-section {
@@ -583,7 +582,7 @@
             <h2 id="modalTitle" class="modal-title"></h2>
 
             <form id="loginForm" class="auth-form" style="display: none;">
-                <input type="text" id="loginUsernameOrEmail" placeholder="Kullanıcı Adı veya E-posta" required>
+                <input type="email" id="loginEmail" placeholder="E-posta" required>
                 <input type="password" id="loginPassword" placeholder="Şifre" required>
                 <button type="submit">Giriş Yap</button>
                 <div id="loginMessage" class="message-box"></div>
@@ -605,7 +604,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, doc, setDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // Removed Firestore imports as requested for simplification
 
         const firebaseConfig = {
             apiKey: "AIzaSyCPgJ2XTj1Gtx34e-JrxKsY5PLDPI_ug5Q",
@@ -619,7 +618,6 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app); // Initialize Firestore
 
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
@@ -636,7 +634,7 @@
         const showRegisterLink = document.getElementById('showRegister');
         const showLoginLink = document.getElementById('showLogin');
 
-        const loginUsernameOrEmailInput = document.getElementById('loginUsernameOrEmail'); // Changed ID
+        const loginEmailInput = document.getElementById('loginEmail'); // Changed back to email input
         const loginPasswordInput = document.getElementById('loginPassword');
         const loginMessageDiv = document.getElementById('loginMessage');
 
@@ -700,7 +698,7 @@
 
         function closeModal() {
             authModalOverlay.classList.remove('active');
-            loginUsernameOrEmailInput.value = '';
+            loginEmailInput.value = '';
             loginPasswordInput.value = '';
             registerUsernameInput.value = '';
             registerEmailInput.value = '';
@@ -733,17 +731,10 @@
             element.style.display = 'block';
         }
 
-        // --- Firebase Authentication & Firestore Logic ---
-
-        // Helper to check if string is email
-        function isEmail(input) {
-            return /\S+@\S+\.\S+/.test(input);
-        }
-
         // Handle Registration
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = registerUsernameInput.value.trim();
+            const username = registerUsernameInput.value.trim(); // Still collect username for form, but not used for auth directly
             const email = registerEmailInput.value.trim();
             const password = registerPasswordInput.value;
             const confirmPassword = registerConfirmPasswordInput.value;
@@ -756,34 +747,16 @@
                 return;
             }
 
-            // Basic username validation (e.g., no spaces, min length)
-            if (username.includes(' ') || username.length < 3) {
-                displayMessage(registerMessageDiv, 'Kullanıcı adı boşluk içeremez ve en az 3 karakter olmalı.', 'error');
-                return;
-            }
-
             try {
-                // 1. Check if username already exists in Firestore
-                const usernameQuery = query(collection(db, "users"), where("username", "==", username));
-                const usernameSnapshot = await getDocs(usernameQuery);
-                if (!usernameSnapshot.empty) {
-                    displayMessage(registerMessageDiv, 'Bu kullanıcı adı zaten alınmış.', 'error');
-                    return;
-                }
-
-                // 2. Create user with email and password in Firebase Authentication
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // 3. Save username and email to Firestore using user's UID
-                await setDoc(doc(db, "users", user.uid), {
-                    username: username,
-                    email: email,
-                    uid: user.uid // Store UID for easier lookup if needed
-                });
+                // Optionally, you can set the username as the display name in Firebase Auth
+                // Note: This is not unique and not searchable for login
+                // await updateProfile(user, { displayName: username });
 
-                displayMessage(registerMessageDiv, `Kayıt başarılı! Hoş geldin, ${username}!`, 'success');
-                console.log('User registered and profile saved:', user);
+                displayMessage(registerMessageDiv, `Kayıt başarılı! Hoş geldin, ${username || email}!`, 'success');
+                console.log('User registered:', user);
                 closeModal(); // Close modal on successful registration
 
             } catch (error) {
@@ -803,40 +776,23 @@
         // Handle Login
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const input = loginUsernameOrEmailInput.value.trim();
+            const email = loginEmailInput.value.trim(); // Now strictly email
             const password = loginPasswordInput.value;
 
             displayMessage(loginMessageDiv, '', '');
             loginMessageDiv.style.display = 'none';
 
-            let emailToLogin = input;
-
             try {
-                if (!isEmail(input)) {
-                    // If input is not an email, try to find email by username in Firestore
-                    const usernameQuery = query(collection(db, "users"), where("username", "==", input));
-                    const usernameSnapshot = await getDocs(usernameQuery);
-
-                    if (usernameSnapshot.empty) {
-                        displayMessage(loginMessageDiv, 'Kullanıcı adı veya e-posta bulunamadı.', 'error');
-                        return;
-                    } else {
-                        // Found username, get the associated email
-                        emailToLogin = usernameSnapshot.docs[0].data().email;
-                    }
-                }
-
-                // Attempt to sign in with the determined email and password
-                const userCredential = await signInWithEmailAndPassword(auth, emailToLogin, password);
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 displayMessage(loginMessageDiv, `Giriş başarılı! Hoş geldin!`, 'success');
                 console.log('User logged in:', user);
-                closeModal(); // Close modal on successful login
+                closeModal();
 
             } catch (error) {
-                let errorMessage = 'Giriş başarısız oldu. Lütfen kullanıcı adı/e-posta ve şifrenizi kontrol edin.';
+                let errorMessage = 'Giriş başarısız oldu. Lütfen e-posta ve şifrenizi kontrol edin.';
                 if (error.code === 'auth/invalid-credential') {
-                    errorMessage = 'Yanlış kullanıcı adı/e-posta veya şifre.';
+                    errorMessage = 'Yanlış e-posta veya şifre.';
                 } else if (error.code === 'auth/user-disabled') {
                     errorMessage = 'Hesabınız devre dışı bırakıldı.';
                 }
@@ -849,48 +805,28 @@
         logoutBtn.addEventListener('click', async () => {
             try {
                 await signOut(auth);
-                // UI will be updated by onAuthStateChanged listener
                 console.log('User logged out');
             } catch (error) {
                 console.error('Logout error:', error);
-                // Optionally display a message
             }
         });
 
-        // --- User State Change Listener ---
+        // User State Change Listener
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 // User is signed in
                 loginBtn.style.display = 'none';
                 registerBtn.style.display = 'none';
                 logoutBtn.style.display = 'inline-block';
-
-                // Fetch username from Firestore
-                try {
-                    const userDocRef = doc(db, "users", user.uid);
-                    const userDocSnap = await getDoc(userDocRef);
-                    if (userDocSnap.exists()) {
-                        const userData = userDocSnap.data();
-                        loggedInUserDisplay.textContent = `Hoş Geldin, ${userData.username}!`;
-                        loggedInUserDisplay.style.display = 'inline-block';
-                    } else {
-                        // Fallback if username not found in Firestore (shouldn't happen if registration worked)
-                        loggedInUserDisplay.textContent = `Hoş Geldin, ${user.email}!`;
-                        loggedInUserDisplay.style.display = 'inline-block';
-                    }
-                } catch (error) {
-                    console.error("Error fetching user data from Firestore:", error);
-                    loggedInUserDisplay.textContent = `Hoş Geldin, ${user.email}!`;
-                    loggedInUserDisplay.style.display = 'inline-block';
-                }
-
+                loggedInUserDisplay.textContent = `Hoş Geldin, ${user.email}!`; // Display email
+                loggedInUserDisplay.style.display = 'inline-block';
             } else {
                 // User is signed out
                 loginBtn.style.display = 'inline-block';
                 registerBtn.style.display = 'inline-block';
                 loggedInUserDisplay.style.display = 'none';
                 logoutBtn.style.display = 'none';
-                loggedInUserDisplay.textContent = ''; // Clear username
+                loggedInUserDisplay.textContent = '';
             }
         });
     </script>
