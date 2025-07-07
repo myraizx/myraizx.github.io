@@ -68,9 +68,10 @@
             display: flex;
             gap: 10px;
             z-index: 1000;
+            align-items: center; /* Align items vertically */
         }
 
-        .theme-toggle, .auth-top-button {
+        .theme-toggle, .auth-top-button, .user-display-button {
             background-color: var(--dark-secondary-bg);
             color: var(--dark-text-color);
             border: 1px solid var(--dark-border-color);
@@ -84,10 +85,19 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
             white-space: nowrap;
         }
-        .theme-toggle:hover, .auth-top-button:hover {
+        .theme-toggle:hover, .auth-top-button:hover, .user-display-button:hover {
             opacity: 0.95;
             box-shadow: 0 6px 12px var(--dark-shadow-color);
             transform: translateY(-1px);
+        }
+
+        /* Style for the username text */
+        .username-display {
+            color: var(--dark-text-color);
+            font-size: 1.1em;
+            font-weight: 700;
+            padding: 12px 0; /* Align with button padding */
+            margin-right: 5px; /* Space between username and logout button */
         }
 
         .hero-section {
@@ -478,7 +488,7 @@
                 right: 15px;
                 gap: 8px;
             }
-            .theme-toggle, .auth-top-button {
+            .theme-toggle, .auth-top-button, .user-display-button {
                 padding: 10px 15px;
                 font-size: 0.85em;
             }
@@ -517,7 +527,7 @@
                 align-items: flex-end;
                 gap: 5px;
             }
-            .theme-toggle, .auth-top-button {
+            .theme-toggle, .auth-top-button, .user-display-button {
                 padding: 8px 12px;
                 font-size: 0.8em;
             }
@@ -532,6 +542,8 @@
     <div class="top-right-controls">
         <button id="loginBtn" class="auth-top-button">Giriş Yap</button>
         <button id="registerBtn" class="auth-top-button">Kayıt Ol</button>
+        <span id="loggedInUserDisplay" class="username-display" style="display: none;"></span>
+        <button id="logoutBtn" class="user-display-button" style="display: none;">Çıkış Yap</button>
         <button id="themeToggle" class="theme-toggle">Temayı Değiştir (Şu An: Karanlık)</button>
     </div>
 
@@ -571,7 +583,7 @@
             <h2 id="modalTitle" class="modal-title"></h2>
 
             <form id="loginForm" class="auth-form" style="display: none;">
-                <input type="email" id="loginEmail" placeholder="E-posta" required>
+                <input type="text" id="loginUsernameOrEmail" placeholder="Kullanıcı Adı veya E-posta" required>
                 <input type="password" id="loginPassword" placeholder="Şifre" required>
                 <button type="submit">Giriş Yap</button>
                 <div id="loginMessage" class="message-box"></div>
@@ -592,7 +604,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCPgJ2XTj1Gtx34e-JrxKsY5PLDPI_ug5Q",
@@ -606,12 +619,15 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app); // Initialize Firestore
 
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
 
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
+        const loggedInUserDisplay = document.getElementById('loggedInUserDisplay');
+        const logoutBtn = document.getElementById('logoutBtn');
         const authModalOverlay = document.getElementById('authModalOverlay');
         const modalCloseButton = document.getElementById('modalCloseButton');
         const modalTitle = document.getElementById('modalTitle');
@@ -620,7 +636,7 @@
         const showRegisterLink = document.getElementById('showRegister');
         const showLoginLink = document.getElementById('showLogin');
 
-        const loginEmailInput = document.getElementById('loginEmail');
+        const loginUsernameOrEmailInput = document.getElementById('loginUsernameOrEmail'); // Changed ID
         const loginPasswordInput = document.getElementById('loginPassword');
         const loginMessageDiv = document.getElementById('loginMessage');
 
@@ -630,6 +646,7 @@
         const registerConfirmPasswordInput = document.getElementById('registerConfirmPassword');
         const registerMessageDiv = document.getElementById('registerMessage');
 
+        // Theme Toggle Logic
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('myraiz-theme');
             if (savedTheme) {
@@ -663,6 +680,7 @@
             }
         }
 
+        // Modal Logic
         function openModal(formType) {
             authModalOverlay.classList.add('active');
             if (formType === 'login') {
@@ -682,7 +700,7 @@
 
         function closeModal() {
             authModalOverlay.classList.remove('active');
-            loginEmailInput.value = '';
+            loginUsernameOrEmailInput.value = '';
             loginPasswordInput.value = '';
             registerUsernameInput.value = '';
             registerEmailInput.value = '';
@@ -715,10 +733,18 @@
             element.style.display = 'block';
         }
 
+        // --- Firebase Authentication & Firestore Logic ---
+
+        // Helper to check if string is email
+        function isEmail(input) {
+            return /\S+@\S+\.\S+/.test(input);
+        }
+
+        // Handle Registration
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = registerUsernameInput.value;
-            const email = registerEmailInput.value;
+            const username = registerUsernameInput.value.trim();
+            const email = registerEmailInput.value.trim();
             const password = registerPasswordInput.value;
             const confirmPassword = registerConfirmPasswordInput.value;
 
@@ -730,11 +756,35 @@
                 return;
             }
 
+            // Basic username validation (e.g., no spaces, min length)
+            if (username.includes(' ') || username.length < 3) {
+                displayMessage(registerMessageDiv, 'Kullanıcı adı boşluk içeremez ve en az 3 karakter olmalı.', 'error');
+                return;
+            }
+
             try {
+                // 1. Check if username already exists in Firestore
+                const usernameQuery = query(collection(db, "users"), where("username", "==", username));
+                const usernameSnapshot = await getDocs(usernameQuery);
+                if (!usernameSnapshot.empty) {
+                    displayMessage(registerMessageDiv, 'Bu kullanıcı adı zaten alınmış.', 'error');
+                    return;
+                }
+
+                // 2. Create user with email and password in Firebase Authentication
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                displayMessage(registerMessageDiv, `Kayıt başarılı! Hoş geldin, ${username || email}!`, 'success');
-                console.log('User registered:', user);
+
+                // 3. Save username and email to Firestore using user's UID
+                await setDoc(doc(db, "users", user.uid), {
+                    username: username,
+                    email: email,
+                    uid: user.uid // Store UID for easier lookup if needed
+                });
+
+                displayMessage(registerMessageDiv, `Kayıt başarılı! Hoş geldin, ${username}!`, 'success');
+                console.log('User registered and profile saved:', user);
+                closeModal(); // Close modal on successful registration
 
             } catch (error) {
                 let errorMessage = 'Kayıt başarısız oldu. Lütfen tekrar deneyin.';
@@ -750,29 +800,97 @@
             }
         });
 
+        // Handle Login
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = loginEmailInput.value;
+            const input = loginUsernameOrEmailInput.value.trim();
             const password = loginPasswordInput.value;
 
             displayMessage(loginMessageDiv, '', '');
             loginMessageDiv.style.display = 'none';
 
+            let emailToLogin = input;
+
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                if (!isEmail(input)) {
+                    // If input is not an email, try to find email by username in Firestore
+                    const usernameQuery = query(collection(db, "users"), where("username", "==", input));
+                    const usernameSnapshot = await getDocs(usernameQuery);
+
+                    if (usernameSnapshot.empty) {
+                        displayMessage(loginMessageDiv, 'Kullanıcı adı veya e-posta bulunamadı.', 'error');
+                        return;
+                    } else {
+                        // Found username, get the associated email
+                        emailToLogin = usernameSnapshot.docs[0].data().email;
+                    }
+                }
+
+                // Attempt to sign in with the determined email and password
+                const userCredential = await signInWithEmailAndPassword(auth, emailToLogin, password);
                 const user = userCredential.user;
-                displayMessage(loginMessageDiv, `Giriş başarılı! Hoş geldin, ${user.email}!`, 'success');
+                displayMessage(loginMessageDiv, `Giriş başarılı! Hoş geldin!`, 'success');
                 console.log('User logged in:', user);
+                closeModal(); // Close modal on successful login
 
             } catch (error) {
-                let errorMessage = 'Giriş başarısız oldu. Lütfen e-posta ve şifrenizi kontrol edin.';
+                let errorMessage = 'Giriş başarısız oldu. Lütfen kullanıcı adı/e-posta ve şifrenizi kontrol edin.';
                 if (error.code === 'auth/invalid-credential') {
-                    errorMessage = 'Yanlış e-posta veya şifre.';
+                    errorMessage = 'Yanlış kullanıcı adı/e-posta veya şifre.';
                 } else if (error.code === 'auth/user-disabled') {
                     errorMessage = 'Hesabınız devre dışı bırakıldı.';
                 }
                 displayMessage(loginMessageDiv, errorMessage, 'error');
                 console.error('Firebase login error:', error);
+            }
+        });
+
+        // Handle Logout
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                // UI will be updated by onAuthStateChanged listener
+                console.log('User logged out');
+            } catch (error) {
+                console.error('Logout error:', error);
+                // Optionally display a message
+            }
+        });
+
+        // --- User State Change Listener ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // User is signed in
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+
+                // Fetch username from Firestore
+                try {
+                    const userDocRef = doc(db, "users", user.uid);
+                    const userDocSnap = await getDoc(userDocRef);
+                    if (userDocSnap.exists()) {
+                        const userData = userDocSnap.data();
+                        loggedInUserDisplay.textContent = `Hoş Geldin, ${userData.username}!`;
+                        loggedInUserDisplay.style.display = 'inline-block';
+                    } else {
+                        // Fallback if username not found in Firestore (shouldn't happen if registration worked)
+                        loggedInUserDisplay.textContent = `Hoş Geldin, ${user.email}!`;
+                        loggedInUserDisplay.style.display = 'inline-block';
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data from Firestore:", error);
+                    loggedInUserDisplay.textContent = `Hoş Geldin, ${user.email}!`;
+                    loggedInUserDisplay.style.display = 'inline-block';
+                }
+
+            } else {
+                // User is signed out
+                loginBtn.style.display = 'inline-block';
+                registerBtn.style.display = 'inline-block';
+                loggedInUserDisplay.style.display = 'none';
+                logoutBtn.style.display = 'none';
+                loggedInUserDisplay.textContent = ''; // Clear username
             }
         });
     </script>
