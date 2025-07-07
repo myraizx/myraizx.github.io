@@ -6,78 +6,93 @@
     <title>MyRaiz - Yeni ve En İyi</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Renk Değişkenleri */
         :root {
-            /* Koyu Mod (CraftRise Benzeri) */
-            --dark-primary-bg: #100C2A; /* Daha koyu morumsu */
-            --dark-secondary-bg: #1F1944; /* Navbar gibi */
-            --dark-text-color: #ECEFF1; /* Açık renk metin */
-            --dark-accent-orange: #FF6F00; /* Daha parlak turuncu */
-            --dark-accent-red: #E74C3C; /* Kırmızı vurgu */
-            --dark-card-bg: #2C275F; /* Kart arka planı */
-            --dark-border-color: #4A4588; /* Kart border */
+            --dark-primary-bg: #100C2A;
+            --dark-secondary-bg: #1F1944;
+            --dark-text-color: #ECEFF1;
+            --dark-accent-orange: #FF6F00;
+            --dark-accent-red: #E74C3C;
+            --dark-card-bg: #2C275F;
+            --dark-border-color: #4A4588;
             --dark-shadow-color: rgba(0, 0, 0, 0.6);
             --dark-button-gradient-start: #FF6F00;
             --dark-button-gradient-end: #FF9800;
+            --form-bg: #1F1944;
+            --input-bg: #100C2A;
+            --input-border: #4A4588;
+            --input-text: #ECEFF1;
+            --error-color: #E74C3C;
+            --success-color: #2ECC71;
+            --link-color: #FF9800;
         }
 
-        /* Aydınlık Mod Stilleri */
         body.light-mode {
-            --dark-primary-bg: #E0E0E0; /* Açık arka plan */
-            --dark-secondary-bg: #F5F5F5; /* Navbar gibi daha açık öğeler */
-            --dark-text-color: #333333; /* Koyu renk metin */
-            --dark-accent-orange: #F57C00; /* Daha açık turuncu */
-            --dark-accent-red: #D32F2F; /* Daha açık kırmızı */
-            --dark-card-bg: #FFFFFF; /* Kart arka planı */
-            --dark-border-color: #CCCCCC; /* Kart border */
+            --dark-primary-bg: #E0E0E0;
+            --dark-secondary-bg: #F5F5F5;
+            --dark-text-color: #333333;
+            --dark-accent-orange: #F57C00;
+            --dark-accent-red: #D32F2F;
+            --dark-card-bg: #FFFFFF;
+            --dark-border-color: #CCCCCC;
             --dark-shadow-color: rgba(0, 0, 0, 0.2);
             --dark-button-gradient-start: #F57C00;
             --dark-button-gradient-end: #FFB300;
+            --form-bg: #FFFFFF;
+            --input-bg: #F0F0F0;
+            --input-border: #CCCCCC;
+            --input-text: #333333;
+            --error-color: #D32F2F;
+            --success-color: #27AE60;
+            --link-color: #F57C00;
         }
 
         body {
-            font-family: 'Oswald', sans-serif; /* Ana metin fontu */
+            font-family: 'Oswald', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            background: var(--dark-primary-bg); /* Başlangıç rengi */
+            background: var(--dark-primary-bg);
             color: var(--dark-text-color);
             transition: background-color 0.4s ease, color 0.4s ease;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Toggle Button */
-        .theme-toggle {
+        .top-right-controls {
             position: fixed;
             top: 25px;
             right: 25px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .theme-toggle, .auth-top-button {
             background-color: var(--dark-secondary-bg);
             color: var(--dark-text-color);
             border: 1px solid var(--dark-border-color);
             padding: 12px 18px;
-            border-radius: 6px; /* Daha az yuvarlak */
+            border-radius: 6px;
             cursor: pointer;
             font-size: 0.95em;
             font-weight: 600;
-            z-index: 1000;
             transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
             box-shadow: 0 4px 8px var(--dark-shadow-color);
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            white-space: nowrap;
         }
-        .theme-toggle:hover {
+        .theme-toggle:hover, .auth-top-button:hover {
             opacity: 0.95;
             box-shadow: 0 6px 12px var(--dark-shadow-color);
             transform: translateY(-1px);
         }
 
-        /* Ana İçerik Kutusu */
         .hero-section {
             width: 100%;
-            height: 65vh; /* Biraz daha yüksek */
+            height: 65vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -85,10 +100,10 @@
             text-align: center;
             position: relative;
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://via.placeholder.com/1920x1080/111111/FFFFFF?text=MyRaiz+Arka+Plan') no-repeat center center / cover;
-            background-attachment: fixed; /* Parallax etkisi gibi */
+            background-attachment: fixed;
             color: white;
             padding: 20px;
-            box-shadow: inset 0 -15px 30px rgba(0,0,0,0.7); /* Alt gölge */
+            box-shadow: inset 0 -15px 30px rgba(0,0,0,0.7);
         }
 
         .hero-section::before {
@@ -98,7 +113,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%); /* Hafif vinyet */
+            background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
             z-index: 1;
         }
 
@@ -107,18 +122,17 @@
             z-index: 2;
         }
 
-        /* LOGO VE SLOGAN İÇİN GÜNCELLEMELER */
         .myraiz-logo {
-            width: 350px; /* Logonun genişliği */
-            height: auto; /* Oranı koru */
-            margin-bottom: 20px; /* Altına boşluk bırak */
-            filter: drop-shadow(0 0 15px rgba(255,255,255,0.4)) drop-shadow(0 0 25px rgba(255,165,0,0.6)); /* Site başlığına benzer ışıklandırma */
-            animation: fadeIn 1.5s ease-out; /* Hafif giriş animasyonu */
+            width: 350px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.4)) drop-shadow(0 0 25px rgba(255,165,0,0.6));
+            animation: fadeIn 1.5s ease-out;
         }
 
         .hero-content p.slogan {
             font-family: 'Oswald', sans-serif;
-            font-size: 2em; /* Daha büyük */
+            font-size: 2em;
             margin-top: 15px;
             margin-bottom: 50px;
             color: #F0F0F0;
@@ -128,35 +142,34 @@
 
         .download-button {
             display: inline-block;
-            background: linear-gradient(45deg, var(--dark-button-gradient-start), var(--dark-button-gradient-end)); /* Gradient buton */
+            background: linear-gradient(45deg, var(--dark-button-gradient-start), var(--dark-button-gradient-end));
             color: white;
-            padding: 18px 45px; /* Daha büyük buton */
+            padding: 18px 45px;
             font-size: 1.6em;
             text-decoration: none;
-            border-radius: 6px; /* Daha az yuvarlak */
+            border-radius: 6px;
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 2px 5px rgba(255,255,255,0.3); /* Hem dış hem iç gölge */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 2px 5px rgba(255,255,255,0.3);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transform: skewX(-5deg); /* Hafif eğiklik */
-            perspective: 1000px; /* 3D dönüşüm için */
+            transform: skewX(-5deg);
+            perspective: 1000px;
         }
 
         .download-button span {
             display: block;
-            transform: skewX(5deg); /* Metni düzelt */
+            transform: skewX(5deg);
         }
 
         .download-button:hover {
-            background: linear-gradient(45deg, var(--dark-button-gradient-end), var(--dark-button-gradient-start)); /* Hoverda gradient yönü değişsin */
-            transform: translateY(-5px) skewX(-5deg); /* Daha belirgin kalkış */
+            background: linear-gradient(45deg, var(--dark-button-gradient-end), var(--dark-button-gradient-start));
+            transform: translateY(-5px) skewX(-5deg);
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7), inset 0 2px 8px rgba(255,255,255,0.4);
         }
 
-        /* Duyuru Kartı Benzeri Bölüm (Nasıl Oynanır) */
         .content-section {
             width: 90%;
             max-width: 900px;
@@ -166,23 +179,23 @@
         .announcement-card {
             display: flex;
             background-color: var(--dark-card-bg);
-            border-radius: 8px; /* Daha az yuvarlak */
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 6px 20px var(--dark-shadow-color); /* Derin gölge */
+            box-shadow: 0 6px 20px var(--dark-shadow-color);
             transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
             border: 1px solid var(--dark-border-color);
             margin-bottom: 30px;
         }
         .announcement-card:hover {
-            transform: translateY(-5px); /* Hafif kalkış */
+            transform: translateY(-5px);
             box-shadow: 0 10px 25px var(--dark-shadow-color);
         }
 
         .announcement-image-area {
             flex-shrink: 0;
-            width: 350px; /* Biraz daha geniş */
-            min-height: 250px; /* Minimum yükseklik */
-            background: url('https://via.placeholder.com/400x300/444444/FFFFFF?text=BEDWARS') no-repeat center center / cover; /* Bedwars placeholder */
+            width: 350px;
+            min-height: 250px;
+            background: url('https://via.placeholder.com/400x300/444444/FFFFFF?text=BEDWARS') no-repeat center center / cover;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -201,14 +214,13 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(to top right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%); /* Hafif overlay */
+            background: linear-gradient(to top right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
             z-index: 1;
         }
         .announcement-image-area span {
             position: relative;
             z-index: 2;
         }
-
 
         .announcement-text-area {
             padding: 30px;
@@ -221,10 +233,10 @@
         }
 
         .announcement-tag {
-            background: linear-gradient(45deg, var(--dark-accent-red), #F08080); /* Kırmızı gradient */
+            background: linear-gradient(45deg, var(--dark-accent-red), #F08080);
             color: white;
             padding: 6px 18px;
-            border-radius: 4px; /* Daha az yuvarlak */
+            border-radius: 4px;
             font-size: 0.85em;
             font-weight: bold;
             text-transform: uppercase;
@@ -255,7 +267,6 @@
             margin-bottom: 0;
         }
 
-        /* Anahtar kare animasyonları */
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -278,13 +289,156 @@
             }
         }
 
-        /* Küçük ekranlar için responsive ayarlar */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--form-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            transform: translateY(-50px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            border: 1px solid var(--dark-border-color);
+            color: var(--dark-text-color);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.8em;
+            color: var(--dark-text-color);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .modal-close-button:hover {
+            color: var(--dark-accent-red);
+        }
+
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            text-align: center;
+            color: var(--dark-text-color);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .auth-form input[type="email"],
+        .auth-form input[type="password"],
+        .auth-form input[type="text"] {
+            padding: 15px;
+            border: 1px solid var(--input-border);
+            border-radius: 5px;
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .auth-form input[type="email"]:focus,
+        .auth-form input[type="password"]:focus,
+        .auth-form input[type="text"]:focus {
+            border-color: var(--dark-accent-orange);
+            box-shadow: 0 0 8px rgba(255, 111, 0, 0.4);
+        }
+
+        .auth-form button[type="submit"] {
+            background: linear-gradient(45deg, var(--dark-button-gradient-start), var(--dark-button-gradient-end));
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+        .auth-form button[type="submit"]:hover {
+            background: linear-gradient(45deg, var(--dark-button-gradient-end), var(--dark-button-gradient-start));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .form-toggle-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.95em;
+        }
+        .form-toggle-link a {
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        .form-toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        .message-box {
+            background-color: var(--dark-card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            display: none;
+            color: var(--dark-text-color);
+        }
+        .message-box.error {
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+        .message-box.success {
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
         @media (max-width: 768px) {
             .hero-section {
                 height: 55vh;
             }
             .myraiz-logo {
-                width: 250px; /* Daha küçük ekranlar için */
+                width: 250px;
             }
             .hero-content p.slogan {
                 font-size: 1.5em;
@@ -293,7 +447,7 @@
             .download-button {
                 font-size: 1.3em;
                 padding: 15px 35px;
-                transform: skewX(0); /* Mobil için eğikliği kaldır */
+                transform: skewX(0);
             }
             .download-button span {
                 transform: skewX(0);
@@ -319,11 +473,20 @@
             .how-to-play ol {
                 padding-left: 20px;
             }
-            .theme-toggle {
+            .top-right-controls {
                 top: 15px;
                 right: 15px;
+                gap: 8px;
+            }
+            .theme-toggle, .auth-top-button {
                 padding: 10px 15px;
                 font-size: 0.85em;
+            }
+            .modal-content {
+                padding: 20px;
+            }
+            .modal-title {
+                font-size: 1.8em;
             }
         }
 
@@ -349,16 +512,28 @@
             .how-to-play ol {
                 font-size: 0.95em;
             }
-            .theme-toggle {
+            .top-right-controls {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 5px;
+            }
+            .theme-toggle, .auth-top-button {
                 padding: 8px 12px;
                 font-size: 0.8em;
+            }
+            .modal-title {
+                font-size: 1.5em;
             }
         }
     </style>
 </head>
 <body>
 
-    <button id="themeToggle" class="theme-toggle">Temayı Değiştir (Şu An: Karanlık)</button>
+    <div class="top-right-controls">
+        <button id="loginBtn" class="auth-top-button">Giriş Yap</button>
+        <button id="registerBtn" class="auth-top-button">Kayıt Ol</button>
+        <button id="themeToggle" class="theme-toggle">Temayı Değiştir (Şu An: Karanlık)</button>
+    </div>
 
     <div class="hero-section">
         <div class="hero-content">
@@ -390,11 +565,71 @@
         </div>
     </div>
 
-    <script>
+    <div id="authModalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-button" id="modalCloseButton">&times;</button>
+            <h2 id="modalTitle" class="modal-title"></h2>
+
+            <form id="loginForm" class="auth-form" style="display: none;">
+                <input type="email" id="loginEmail" placeholder="E-posta" required>
+                <input type="password" id="loginPassword" placeholder="Şifre" required>
+                <button type="submit">Giriş Yap</button>
+                <div id="loginMessage" class="message-box"></div>
+                <p class="form-toggle-link">Hesabın yok mu? <a href="#" id="showRegister">Kayıt Ol</a></p>
+            </form>
+
+            <form id="registerForm" class="auth-form" style="display: none;">
+                <input type="text" id="registerUsername" placeholder="Kullanıcı Adı" required>
+                <input type="email" id="registerEmail" placeholder="E-posta" required>
+                <input type="password" id="registerPassword" placeholder="Şifre" required>
+                <input type="password" id="registerConfirmPassword" placeholder="Şifreyi Onayla" required>
+                <button type="submit">Kayıt Ol</button>
+                <div id="registerMessage" class="message-box"></div>
+                <p class="form-toggle-link">Zaten hesabın var mı? <a href="#" id="showLogin">Giriş Yap</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCPgJ2XTj1Gtx34e-JrxKsY5PLDPI_ug5Q",
+            authDomain: "myraiz-c68b5.firebaseapp.com",
+            projectId: "myraiz-c68b5",
+            storageBucket: "myraiz-c68b5.firebasestorage.app",
+            messagingSenderId: "45555157079",
+            appId: "1:45555157079:web:6cf15d3579fbf9bcea7b12",
+            measurementId: "G-DBJY328CB9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
 
-        // Sayfa yüklendiğinde temayı kontrol et
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const authModalOverlay = document.getElementById('authModalOverlay');
+        const modalCloseButton = document.getElementById('modalCloseButton');
+        const modalTitle = document.getElementById('modalTitle');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const showRegisterLink = document.getElementById('showRegister');
+        const showLoginLink = document.getElementById('showLogin');
+
+        const loginEmailInput = document.getElementById('loginEmail');
+        const loginPasswordInput = document.getElementById('loginPassword');
+        const loginMessageDiv = document.getElementById('loginMessage');
+
+        const registerUsernameInput = document.getElementById('registerUsername');
+        const registerEmailInput = document.getElementById('registerEmail');
+        const registerPasswordInput = document.getElementById('registerPassword');
+        const registerConfirmPasswordInput = document.getElementById('registerConfirmPassword');
+        const registerMessageDiv = document.getElementById('registerMessage');
+
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('myraiz-theme');
             if (savedTheme) {
@@ -427,6 +662,119 @@
                 themeToggle.textContent = 'Temayı Değiştir (Şu An: Aydınlık)';
             }
         }
+
+        function openModal(formType) {
+            authModalOverlay.classList.add('active');
+            if (formType === 'login') {
+                modalTitle.textContent = 'Giriş Yap';
+                loginForm.style.display = 'flex';
+                registerForm.style.display = 'none';
+            } else {
+                modalTitle.textContent = 'Kayıt Ol';
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'flex';
+            }
+            loginMessageDiv.style.display = 'none';
+            registerMessageDiv.style.display = 'none';
+            loginMessageDiv.textContent = '';
+            registerMessageDiv.textContent = '';
+        }
+
+        function closeModal() {
+            authModalOverlay.classList.remove('active');
+            loginEmailInput.value = '';
+            loginPasswordInput.value = '';
+            registerUsernameInput.value = '';
+            registerEmailInput.value = '';
+            registerPasswordInput.value = '';
+            registerConfirmPasswordInput.value = '';
+        }
+
+        loginBtn.addEventListener('click', () => openModal('login'));
+        registerBtn.addEventListener('click', () => openModal('register'));
+        modalCloseButton.addEventListener('click', closeModal);
+        authModalOverlay.addEventListener('click', (e) => {
+            if (e.target === authModalOverlay) {
+                closeModal();
+            }
+        });
+
+        showRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('register');
+        });
+
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('login');
+        });
+
+        function displayMessage(element, message, type) {
+            element.textContent = message;
+            element.className = 'message-box ' + type;
+            element.style.display = 'block';
+        }
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = registerUsernameInput.value;
+            const email = registerEmailInput.value;
+            const password = registerPasswordInput.value;
+            const confirmPassword = registerConfirmPasswordInput.value;
+
+            displayMessage(registerMessageDiv, '', '');
+            registerMessageDiv.style.display = 'none';
+
+            if (password !== confirmPassword) {
+                displayMessage(registerMessageDiv, 'Şifreler eşleşmiyor!', 'error');
+                return;
+            }
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                displayMessage(registerMessageDiv, `Kayıt başarılı! Hoş geldin, ${username || email}!`, 'success');
+                console.log('User registered:', user);
+
+            } catch (error) {
+                let errorMessage = 'Kayıt başarısız oldu. Lütfen tekrar deneyin.';
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'Bu e-posta adresi zaten kullanılıyor.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Geçersiz e-posta adresi.';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'Şifre çok zayıf. En az 6 karakter olmalı.';
+                }
+                displayMessage(registerMessageDiv, errorMessage, 'error');
+                console.error('Firebase registration error:', error);
+            }
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = loginEmailInput.value;
+            const password = loginPasswordInput.value;
+
+            displayMessage(loginMessageDiv, '', '');
+            loginMessageDiv.style.display = 'none';
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                displayMessage(loginMessageDiv, `Giriş başarılı! Hoş geldin, ${user.email}!`, 'success');
+                console.log('User logged in:', user);
+
+            } catch (error) {
+                let errorMessage = 'Giriş başarısız oldu. Lütfen e-posta ve şifrenizi kontrol edin.';
+                if (error.code === 'auth/invalid-credential') {
+                    errorMessage = 'Yanlış e-posta veya şifre.';
+                } else if (error.code === 'auth/user-disabled') {
+                    errorMessage = 'Hesabınız devre dışı bırakıldı.';
+                }
+                displayMessage(loginMessageDiv, errorMessage, 'error');
+                console.error('Firebase login error:', error);
+            }
+        });
     </script>
 </body>
 </html>
